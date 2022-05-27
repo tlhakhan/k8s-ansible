@@ -19,6 +19,17 @@
     dest: /usr/local/
     remote_src: yes
 
+- name: Create containerd config folder
+  file:
+    state: directory
+    path: /etc/containerd
+
+- name: Push desired containerd config.toml file
+  copy:
+    src: containerd_config.toml
+    dest: /etc/containerd/config.toml
+  notify: restart containerd
+
 - name: Get the systemd service file
   get_url:
     url: "https://raw.githubusercontent.com/containerd/containerd/v{{ containerd_version }}/containerd.service"

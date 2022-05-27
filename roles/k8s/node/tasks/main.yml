@@ -1,4 +1,10 @@
 ---
+- name: Run node system prep tasks
+  import_tasks: ./sysprep.yml
+
+- name: Run packages tasks
+  import_tasks: ./packages.yml
+
 - name: Install kubelet
   apt:
     name: 'kubelet={{ k8s_version }}'
