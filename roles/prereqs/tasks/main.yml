@@ -17,6 +17,7 @@
   unarchive:
     src: '{{ containerd_download.path }}'
     dest: /usr/local/
+    remote_src: yes
 
 - name: Get the systemd service file
   get_url:
@@ -48,6 +49,7 @@
     src: '{{ runc_download.path }}'
     dest: /usr/local/sbin/runc
     mode: 0755
+    remote_src: yes
 
 #
 # Install CNI plugins
@@ -71,3 +73,4 @@
   unarchive:
     src: '{{ cni_plugins_download.path }}'
     dest: /opt/cni/bin
+    remote_src: yes 

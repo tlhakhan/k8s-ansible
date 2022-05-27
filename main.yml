@@ -1,8 +1,7 @@
 #!/usr/bin/ansible-playbook
 ---
 - name: Install Kubernetes
-  hosts: localhost
-  connection: local
+  hosts: all
   roles:
     - prereqs
     - k8s/repo
