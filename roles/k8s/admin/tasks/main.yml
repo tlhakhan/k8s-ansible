@@ -19,3 +19,6 @@
     line: 'source /usr/share/bash-completion/bash_completion'
     path: /root/.bashrc
     state: present
+
+- name: Pull the kubeadm images
+  command: kubeadm config images pull
