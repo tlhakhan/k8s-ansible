@@ -1,0 +1,22 @@
+---
+- name: Install Debian OS packages
+  package:
+    name: '{{ item }}'
+    state: latest
+  loop:
+    - apt-transport-https
+    - ca-certificates
+    - curl
+
+- name: Install Kubernetes key
+  apt_key:
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    keyring: /usr/share/keyrings/kubernetes-archive-keyring.gpg
+    state: present
+
+- name: Install Kuberentes repository
+  apt_repository:
+    repo: 'deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main'
+    state: present
+    filename: kubernetes
+  notify: update apt cache

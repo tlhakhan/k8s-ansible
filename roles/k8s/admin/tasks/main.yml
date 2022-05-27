@@ -1,0 +1,21 @@
+---
+- name: Install kubeadm and kubelet
+  apt:
+    name: '{{ item }}={{ k8s_version }}'
+  loop:
+    - kubeadm
+    - kubelet
+
+- name: Hold the packages, prevent upgrades
+  dpkg_selections:
+    name: '{{ item }}'
+    selection: hold
+  loop:
+    - kubeadm
+    - kubelet
+
+- name: Setup kubectl autocompletion in bash
+  lineinfile:
+    line: 'source /usr/share/bash-completion/bash_completion'
+    path: ~/.bashrc
+    state: present

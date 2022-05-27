@@ -1,0 +1,73 @@
+---
+
+#
+# Install containerd container rumtime
+#
+- name: Make tempfile to store containerd release tarball
+  tempfile:
+  register: containerd_download
+  
+- name: Get containerd release tarball
+  get_url:
+    url: "https://github.com/containerd/containerd/releases/download/v{{ containerd_version }}/containerd-{{ containerd_version }}-linux-amd64.tar.gz"
+    checksum: "sha256:https://github.com/containerd/containerd/releases/download/v{{ containerd_version }}/containerd-{{ containerd_version }}-linux-amd64.tar.gz.sha256sum"
+    dest: '{{ containerd_download.path}}'
+
+- name: Extract release tarball
+  unarchive:
+    src: '{{ containerd_download.path }}'
+    dest: /usr/local/
+
+- name: Get the systemd service file
+  get_url:
+    url: "https://raw.githubusercontent.com/containerd/containerd/v{{ containerd_version }}/containerd.service"
+    dest: /usr/lib/systemd/system/containerd.service
+
+- name: Enable containerd service
+  systemd:
+    name: containerd.service
+    state: started
+    enabled: yes
+    daemon_reload: yes
+    
+#
+# Install runc
+# 
+- name: Make tempfile for runc download
+  tempfile:
+  register: runc_download
+
+- name: Download runc
+  get_url:
+    url: https://github.com/opencontainers/runc/releases/download/v{{ runc_version }}/runc.amd64
+    checksum: "sha256:https://github.com/opencontainers/runc/releases/download/v{{ runc_version }}/runc.sha256sum"
+    dest: '{{ runc_download.path }}'
+
+- name: Install runc
+  copy:
+    src: '{{ runc_download.path }}'
+    dest: /usr/local/sbin/runc
+    mode: 0755
+
+#
+# Install CNI plugins
+#
+- name: Make tempfile for cni-plugins download
+  tempfile:
+  register: cni_plugins_download
+
+- name: Download cni-plugins release tarball
+  get_url:
+    url: "https://github.com/containernetworking/plugins/releases/download/v{{ cni_plugins_version }}/cni-plugins-linux-amd64-v{{ cni_plugins_version }}.tgz"
+    checksum: "sha256:https://github.com/containernetworking/plugins/releases/download/v{{ cni_plugins_version }}/cni-plugins-linux-amd64-v{{ cni_plugins_version }}.tgz.sha256"
+    dest: '{{ cni_plugins_download.path }}'
+
+- name: Make folder for cni-plugins binaries
+  file:
+    state: directory
+    path: /opt/cni/bin
+
+- name: Unarchive cni-plugins tarball
+  unarchive:
+    src: '{{ cni_plugins_download.path }}'
+    dest: /opt/cni/bin

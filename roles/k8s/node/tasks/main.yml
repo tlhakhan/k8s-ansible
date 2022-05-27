@@ -1,0 +1,9 @@
+---
+- name: Install kubelet
+  apt:
+    name: 'kubelet={{ k8s_version }}'
+
+- name: Hold the packages, prevent upgrades
+  dpkg_selections:
+    name: kubelet
+    selection: hold
