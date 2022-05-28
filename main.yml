@@ -1,17 +1,12 @@
 #!/usr/bin/ansible-playbook
 ---
-- name: Install Kubernetes repo
+- name: Install Kubernetes
   hosts: k8s_cluster
   roles:
     - k8s/repo
+    - k8s/node
 
 - name: Install Kubernetes control machine
   hosts: admin
   roles:
     - k8s/admin
-    - k8s/node
-
-- name: Install Kubernetes worker node
-  hosts: node
-  roles:
-    - k8s/node
